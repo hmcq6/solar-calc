@@ -16,5 +16,20 @@
       {{/bs-button}}
     </div>
   {{/g.control}}
+  {{#g.control position="RIGHT_CENTER"}}
+    <div class="map-control">
+      {{#bs-button
+        type="secondary"
+        onClick=(action "toggleDraw")}}
+        {{input type="checkbox" checked=draw}}
+        Draw Plot
+      {{/bs-button}}
+      {{#bs-button
+        type="secondary"
+        onClick=(action "clearPoints")}}
+        Clear
+      {{/bs-button}}
+    </div>
+  {{/g.control}}
 {{/g-map}}
 {{yield}}

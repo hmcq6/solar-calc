@@ -7,7 +7,9 @@ export default Component.extend({
   google: reads('googleMapsApi.google'),
 
   address: '',
+  draw: false,
   points: [],
+  _polylines: null,
 
   actions: {
     search(map) {
@@ -18,10 +20,19 @@ export default Component.extend({
         map.panTo({ lat, lng });
       });
     },
+    toggleDraw() {
+      this.toggleProperty('draw');
+    },
+    clearPoints() {
+      this.set('points', []);
+      this.get('_polylines').setMap(null);
+      this.set('_polylines', null);
+    },
     onLoad({ map, _publicAPI}) {
       this.set('map', map);
     },
     onClick({ googleEvent }) {
+      if (!this.get('draw')) { return; }
       const { latLng } = googleEvent;
       this.get('points').push({
         lat: latLng.lat(),
@@ -34,6 +45,10 @@ export default Component.extend({
         strokeOpacity: 1.0,
         strokeWeight: 3
       });
+      if (this.get('_polylines') !== null) {
+        this.get('_polylines').setMap(null);
+      }
+      this.set('_polylines', lines);
       lines.setMap(this.get('map'));
     }
   }
