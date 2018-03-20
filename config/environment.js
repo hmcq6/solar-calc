@@ -47,5 +47,14 @@ module.exports = function(environment) {
     // here you can enable a production-specific feature
   }
 
+  ENV['ember-google-maps'] = {
+    key: 'AIzaSyDRZk56xqK6QcnY7qoui05NFCTOvY88DeM',
+    language: 'en',
+    region: 'US',
+    protocol: 'http',
+    version: '3.31',
+    libraries: ['geometry', 'places']
+  }
+
   return ENV;
 };
