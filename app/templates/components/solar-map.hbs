@@ -1,0 +1,20 @@
+{{#g-map
+  lat="42.3600825"
+  lng="-71.05888010000001"
+  zoom=18
+  onLoad=(action "onLoad")
+  onClick=(action "onClick")
+  as |g|
+}}
+  {{#g.control position="TOP_CENTER"}}
+    <div class="map-control">
+      {{input type="text" value=address}}
+      {{#bs-button
+        type="primary"
+        onClick=(action "search" g.map)}}
+        Search
+      {{/bs-button}}
+    </div>
+  {{/g.control}}
+{{/g-map}}
+{{yield}}
