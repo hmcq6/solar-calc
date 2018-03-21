@@ -3,6 +3,9 @@ import { inject } from '@ember/service';
 import { reads } from '@ember/object/computed';
 import { computed } from '@ember/object';
 
+const solarConstant = 136.5, // mW/cm^2
+      secondsInYear = 31557600;
+
 export default Component.extend({
   googleMapsApi: inject(),
   google: reads('googleMapsApi.google'),
@@ -22,20 +25,30 @@ export default Component.extend({
 
   minLat: computed('points.[]', function() {
     return this.get('points').reduce(
-      (min, cur) => Math.min(cur.lat, min),
+      (min, cur) => Math.min(min, cur.lat),
       Infinity
     );
   }),
 
   maxLat: computed('points.[]', function() {
     return this.get('points').reduce(
-      (max, cur) => Math.max(cur.lat, max),
+      (max, cur) => Math.max(max, cur.lat),
       -Infinity
     );
   }),
 
   averageLat: computed('{min,max}Lat', function() {
     return (this.get('minLat') + this.get('maxLat')) / 2;
+  }),
+
+  seasonalPeakPower: computed('area', 'averageLat', function() {
+    const peakPercentage = Math.cos((this.get('averageLat') - 23.5) * Math.PI / 180 );
+    return solarConstant * peakPercentage * ( this.get('area') / 1000 ) * secondsInYear / 2 / 1000;
+  }),
+
+  seasonalMinPower: computed('area', 'averageLat', function() {
+    const minPercentage = Math.cos((this.get('averageLat') + 23.5) * Math.PI / 180 );
+    return solarConstant * minPercentage * ( this.get('area') / 1000 ) * secondsInYear / 2 / 1000;
   }),
 
   actions: {
@@ -70,14 +83,6 @@ export default Component.extend({
     },
     calculate() {
       this.get('_polygon').setMap(this.get('map'));
-      const solarConstant = 136.5, // mW/cm^2
-            secondsInYear = 31557600,
-            area = this.get('area'),
-            averageLat = this.get('averageLat'),
-            peakPercentage = Math.cos((averageLat - 23.5) * Math.PI / 180 ),
-            minPercentage = Math.cos((averageLat + 23.5) * Math.PI / 180 ),
-            peakPower = solarConstant * peakPercentage * ( area / 1000 ) * secondsInYear / 2 / 1000,
-            minPower = solarConstant * minPercentage * ( area / 1000 ) * secondsInYear / 2 / 1000;
     },
     onLoad({ map, _publicAPI}) {
       this.set('map', map);
@@ -85,7 +90,7 @@ export default Component.extend({
     onClick({ googleEvent }) {
       if (!this.get('draw')) { return; }
       const { latLng } = googleEvent;
-      this.get('points').push({
+      this.get('points').addObject({
         lat: latLng.lat(),
         lng: latLng.lng()
       })
