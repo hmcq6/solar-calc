@@ -9,7 +9,7 @@
 }}
   {{#g.control position="TOP_CENTER"}}
     <div class="map-control top-panel">
-      {{input type="text" value=address class="form-control"}}
+      {{input type="text" value=address class="form-control" placeholder="Search for Location"}}
       {{#bs-button
         type="primary"
         onClick=(action "search" g.map)}}
@@ -26,27 +26,42 @@
         Draw Plot
       {{/bs-button}}
       {{#bs-button
+        type="primary"
+        onClick=(action "toggleBoundingBox")}}
+        {{input type="checkbox" checked=isBoundingBoxShown}}
+        Overlay Bounding Box
+      {{/bs-button}}
+      {{#bs-button
         type="secondary"
+        disabled=isClearDisabled
         onClick=(action "clearPoints")}}
         Clear
       {{/bs-button}}
     </div>
   {{/g.control}}
   {{#g.control position="RIGHT_CENTER"}}
-    <div class="map-control right-panel">
-      {{#bs-button
-        type="primary"
-        onClick=(action "calculate")}}
-        Calculate solar in area
-      {{/bs-button}}
+    <div class="map-control right-panel text-right">
+      <label>Expected Solar Efficiency: </label>
+      {{#bs-dropdown as |dd|}}
+        {{#dd.button}}{{selectedEfficiency}}<span class="caret"></span>{{/dd.button}}
+        {{#dd.menu as |menu|}}
+          {{#each solarEfficiencyRanges as |range|}}
+            {{#menu.item}}
+              <a {{action "selectRange" range}}>{{range}}</a>
+            {{/menu.item}}
+          {{/each}}
+        {{/dd.menu}}
+      {{/bs-dropdown}}
+      <br />
       <label>Area: </label>
-      {{area}}
+      {{format-value area '0,0.00'}} M²
       <br />
-      <label>Peak Seasonal Power: </label>
-      {{seasonalPeakPower}}
+      <label>Peak Season Power: </label>
+      {{format-value seasonalPeakPower '0,0'}} W
       <br />
-      <label>Minimum Seasonal Power: </label>
-      {{seasonalMinPower}}
+      <label>Off Season Power: </label>
+      {{format-value seasonalMinPower '0,0'}} W
+      <br />
     </div>
   {{/g.control}}
 {{/g-map}}

@@ -2,9 +2,9 @@ import Component from '@ember/component';
 import { inject } from '@ember/service';
 import { reads } from '@ember/object/computed';
 import { computed } from '@ember/object';
+import numeral from 'numeral';
 
-const solarConstant = 136.5, // mW/cm^2
-      secondsInYear = 31557600;
+const solarConstant = 1365; // W/m^2
 
 export default Component.extend({
   googleMapsApi: inject(),
@@ -14,9 +14,24 @@ export default Component.extend({
 
   address: '',
   draw: false,
+  isBoundingBoxShown: false,
+  isClearDisabled: computed.equal('_polylines', null),
   points: [],
   _polylines: null,
   _polygon: null,
+
+  selectedEfficiency: computed.oneWay('solarEfficiencyRanges.firstObject'),
+
+  solarEfficiencyRanges: [
+    '15%',
+    '16%',
+    '17%',
+    '18%',
+    '19%',
+    '20%',
+    '21%',
+    '22%'
+  ],
 
   area: computed('_polygon', function() {
     if (this.get('_polygon') === null) { return 0; }
@@ -41,14 +56,28 @@ export default Component.extend({
     return (this.get('minLat') + this.get('maxLat')) / 2;
   }),
 
-  seasonalPeakPower: computed('area', 'averageLat', function() {
-    const peakPercentage = Math.cos((this.get('averageLat') - 23.5) * Math.PI / 180 );
-    return solarConstant * peakPercentage * ( this.get('area') / 1000 ) * secondsInYear / 2 / 1000;
+  // Power is determined by the Solar Constant (1365 W/m^2) multiplied by
+  // the cosine of the angle between the plotted area on earth and the sun
+  // multiplied by the size of the plotted area in m^2
+  // all multiplied by the expected efficiency
+
+
+  seasonalPeakPower: computed('area', 'averageLat', 'selectedEfficiency', function() {
+    const efficiency = numeral(this.get('selectedEfficiency')).value(),
+          peakPercentage = Math.cos(
+      // Its commonly accepted that the sun moves about 23.5 degrees north and
+      // south each year, so 23.5 is used as the maximum variance between seasons
+      (this.get('averageLat') - 23.5)
+      // Math.cos expects radians. 1π rad = 180˚, so ans in rads = num of ˚ times π / 180
+      * Math.PI / 180
+    );
+    return solarConstant * peakPercentage * this.get('area') * efficiency;
   }),
 
-  seasonalMinPower: computed('area', 'averageLat', function() {
-    const minPercentage = Math.cos((this.get('averageLat') + 23.5) * Math.PI / 180 );
-    return solarConstant * minPercentage * ( this.get('area') / 1000 ) * secondsInYear / 2 / 1000;
+  seasonalMinPower: computed('area', 'averageLat', 'selectedEfficiency', function() {
+    const efficiency = numeral(this.get('selectedEfficiency')).value(),
+          minPercentage = Math.cos((this.get('averageLat') + 23.5) * Math.PI / 180 );
+    return solarConstant * minPercentage * this.get('area') * efficiency;
   }),
 
   actions: {
@@ -81,44 +110,55 @@ export default Component.extend({
         }
       });
     },
-    calculate() {
-      this.get('_polygon').setMap(this.get('map'));
+    toggleBoundingBox() {
+      this.toggleProperty('isBoundingBoxShown');
+      if (this.get('_polygon') !== null) {
+        this.get('_polygon').setMap(
+          this.get('isBoundingBoxShown')
+            ? this.get('map')
+            : null
+        );
+      }
+    },
+    selectRange(range) {
+      this.set('selectedEfficiency', range);
     },
     onLoad({ map, _publicAPI}) {
       this.set('map', map);
     },
     onClick({ googleEvent }) {
       if (!this.get('draw')) { return; }
-      const { latLng } = googleEvent;
+      const { latLng } = googleEvent,
+            mapDefaults = {
+              geodesic: true,
+              strokeColor: 'orange',
+              strokeOpacity: 1.0,
+              strokeWeight: 3,
+              fillColor: 'black',
+              fillOpacity: 0.35
+            };
       this.get('points').addObject({
         lat: latLng.lat(),
         lng: latLng.lng()
       })
-      const lines = new google.maps.Polyline({
-        path: this.get('points'),
-        geodesic: true,
-        strokeColor: 'orange',
-        strokeOpacity: 1.0,
-        strokeWeight: 3
-      });
+      const lines = new google.maps.Polyline(
+        Object.assign({ path: this.get('points') }, mapDefaults)
+      );
       if (this.get('_polylines') !== null) {
         this.get('_polylines').setMap(null);
       }
       this.set('_polylines', lines);
       lines.setMap(this.get('map'));
-      const polygon = new google.maps.Polygon({
-        paths: this.get('points'),
-        geodesic: true,
-        strokeColor: 'orange',
-        strokeOpacity: 1.0,
-        strokeWeight: 3,
-        fillColor: 'black',
-        fillOpacity: 0.35
-      });
+      const polygon = new google.maps.Polygon(
+        Object.assign({ paths: this.get('points') }, mapDefaults)
+      );
       if (this.get('_polygon') !== null) {
         this.get('_polygon').setMap(null);
       }
       this.set('_polygon', polygon);
+      if (this.get('isBoundingBoxShown')) {
+        polygon.setMap(this.get('map'));
+      }
     }
   }
 });
