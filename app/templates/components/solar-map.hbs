@@ -30,11 +30,6 @@
         onClick=(action "clearPoints")}}
         Clear
       {{/bs-button}}
-      {{#bs-button
-        type="secondary"
-        onClick=(action "drawBoundingBox")}}
-        Use Bounding Box
-      {{/bs-button}}
     </div>
   {{/g.control}}
   {{#g.control position="RIGHT_CENTER"}}
@@ -44,6 +39,8 @@
         onClick=(action "calculate")}}
         Calculate solar in area
       {{/bs-button}}
+      <label>Area: </label>
+      {{area}}
     </div>
   {{/g.control}}
 {{/g-map}}
