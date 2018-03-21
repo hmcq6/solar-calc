@@ -1,4 +1,5 @@
 {{#g-map
+  class="col-sm"
   lat="42.3600825"
   lng="-71.05888010000001"
   zoom=18
@@ -7,8 +8,8 @@
   as |g|
 }}
   {{#g.control position="TOP_CENTER"}}
-    <div class="map-control">
-      {{input type="text" value=address}}
+    <div class="map-control top-panel">
+      {{input type="text" value=address class="form-control"}}
       {{#bs-button
         type="primary"
         onClick=(action "search" g.map)}}
@@ -16,11 +17,11 @@
       {{/bs-button}}
     </div>
   {{/g.control}}
-  {{#g.control position="RIGHT_CENTER"}}
-    <div class="map-control">
+  {{#g.control position="TOP_RIGHT"}}
+    <div class="map-control right-panel">
       {{#bs-button
         type="secondary"
-        onClick=(action "toggleDraw")}}
+        onClick=(action "toggleDraw" g.map)}}
         {{input type="checkbox" checked=draw}}
         Draw Plot
       {{/bs-button}}
@@ -28,6 +29,20 @@
         type="secondary"
         onClick=(action "clearPoints")}}
         Clear
+      {{/bs-button}}
+      {{#bs-button
+        type="secondary"
+        onClick=(action "drawBoundingBox")}}
+        Use Bounding Box
+      {{/bs-button}}
+    </div>
+  {{/g.control}}
+  {{#g.control position="RIGHT_CENTER"}}
+    <div class="map-control right-panel">
+      {{#bs-button
+        type="primary"
+        onClick=(action "calculate")}}
+        Calculate solar in area
       {{/bs-button}}
     </div>
   {{/g.control}}

@@ -6,10 +6,13 @@ export default Component.extend({
   googleMapsApi: inject(),
   google: reads('googleMapsApi.google'),
 
+  classNames: ['col-sm'],
+
   address: '',
   draw: false,
   points: [],
   _polylines: null,
+  _polygon: null,
 
   actions: {
     search(map) {
@@ -20,13 +23,54 @@ export default Component.extend({
         map.panTo({ lat, lng });
       });
     },
-    toggleDraw() {
+    toggleDraw(map) {
       this.toggleProperty('draw');
+      map.setOptions({
+        draggableCursor: this.get('draw')
+          ? 'crosshair'
+          : 'grab'
+      });
     },
     clearPoints() {
       this.set('points', []);
-      this.get('_polylines').setMap(null);
-      this.set('_polylines', null);
+      if (this.get('_polylines') !== null) {
+        this.get('_polylines').setMap(null);
+        this.set('_polylines', null);
+      }
+      if (this.get('_polygon') !== null) {
+        this.get('_polygon').setMap(null);
+        this.set('_polygon', null);
+      }
+    },
+    drawBoundingBox() {
+      const polygon = new google.maps.Polygon({
+        paths: this.get('points'),
+        geodesic: true,
+        strokeColor: 'orange',
+        strokeOpacity: 1.0,
+        strokeWeight: 3,
+        fillColor: 'black',
+        fillOpacity: 0.35
+      });
+      if (this.get('_polygon') !== null) {
+        this.get('_polygon').setMap(null);
+      }
+      this.set('_polygon', polygon);
+      polygon.setMap(this.get('map'));
+    },
+    calculate() {
+      const solarConstant = 136.5, // mW/cm^2
+            secondsInYear = 31557600,
+            area = google.maps.geometry.spherical.computeArea(this.get('_polygon').getPath()),
+            lat = this.get('points').reduce(
+              ({ min, max }, cur) => ({ min: Math.min(cur.lat, min), max: Math.max(cur.lat, max) }),
+              { min: Infinity, max: -Infinity }
+            ),
+            averageLat = (lat.min + lat.max) / 2,
+            peakPercentage = Math.cos((averageLat - 23.5) * Math.PI / 180 ),
+            minPercentage = Math.cos((averageLat + 23.5) * Math.PI / 180 ),
+            peakPower = solarConstant * peakPercentage * ( area / 1000 ) * secondsInYear / 2 / 1000,
+            minPower = solarConstant * minPercentage * ( area / 1000 ) * secondsInYear / 2 / 1000;
     },
     onLoad({ map, _publicAPI}) {
       this.set('map', map);
