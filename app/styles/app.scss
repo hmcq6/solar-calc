@@ -1,0 +1,35 @@
+@import "ember-bootstrap/bootstrap";
+
+.ember-google-map {
+  height: 45em;
+  position: static !important;
+
+  .top-panel {
+    margin-top: 50px;
+    filter: drop-shadow(0 5mm 3mm #111);
+
+    & input[type="text"] {
+      width: 30em;
+      display: inline-block;
+    }
+  }
+
+  .right-panel {
+    background-color: rgba(255, 255, 255, .9);
+    padding: 10px;
+    border: 1px solid black;
+    border-width: 0 0 1px 1px;
+    border-bottom-left-radius: 5px;
+    font-size: 1.5em;
+
+    & button.btn {
+      margin: 10px;
+      filter: drop-shadow(0 2mm 1mm #777);
+    }
+
+    label {
+      font-weight: bold;
+      float: left;
+    }
+  }
+}

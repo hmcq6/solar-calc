@@ -10,7 +10,7 @@ export default Component.extend({
   googleMapsApi: inject(),
   google: reads('googleMapsApi.google'),
 
-  classNames: ['col-sm'],
+  classNames: ['col', 'solar-map'],
 
   address: '',
   draw: false,
@@ -22,16 +22,7 @@ export default Component.extend({
 
   selectedEfficiency: computed.oneWay('solarEfficiencyRanges.firstObject'),
 
-  solarEfficiencyRanges: [
-    '15%',
-    '16%',
-    '17%',
-    '18%',
-    '19%',
-    '20%',
-    '21%',
-    '22%'
-  ],
+  solarEfficiencyRanges: '15% 16% 17% 18% 19% 20% 21% 22%'.w(),
 
   area: computed('_polygon', function() {
     if (this.get('_polygon') === null) { return 0; }
@@ -80,6 +71,26 @@ export default Component.extend({
     return solarConstant * minPercentage * this.get('area') * efficiency;
   }),
 
+  _toggleDraw() {
+    this.toggleProperty('draw');
+    this.get('map').setOptions({
+      draggableCursor: this.get('draw')
+        ? 'crosshair'
+        : 'grab'
+    });
+  },
+
+  _toggleBoundingBox() {
+    this.toggleProperty('isBoundingBoxShown');
+    if (this.get('_polygon') !== null) {
+      this.get('_polygon').setMap(
+        this.get('isBoundingBoxShown')
+          ? this.get('map')
+          : null
+      );
+    }
+  },
+
   actions: {
     search(map) {
       (new google.maps.Geocoder()).geocode(
@@ -93,13 +104,12 @@ export default Component.extend({
         }
       );
     },
-    toggleDraw(map) {
-      this.toggleProperty('draw');
-      map.setOptions({
-        draggableCursor: this.get('draw')
-          ? 'crosshair'
-          : 'grab'
-      });
+    triggerMethod(func, event) {
+      event.stopPropagation();
+      this[func]();
+    },
+    toggleDraw() {
+      this._toggleDraw();
     },
     clearPoints() {
       this.set('points', []);
@@ -111,14 +121,7 @@ export default Component.extend({
       });
     },
     toggleBoundingBox() {
-      this.toggleProperty('isBoundingBoxShown');
-      if (this.get('_polygon') !== null) {
-        this.get('_polygon').setMap(
-          this.get('isBoundingBoxShown')
-            ? this.get('map')
-            : null
-        );
-      }
+      this._toggleBoundingBox();
     },
     selectRange(range) {
       this.set('selectedEfficiency', range);
