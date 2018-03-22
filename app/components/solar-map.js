@@ -66,6 +66,7 @@ export default Component.extend({
     return solarConstant * minPercentage * this.get('area') * efficiency;
   }),
 
+  // Use crosshair cursor to let user know draw mode is active
   _updateCursor() {
     this.get('map').setOptions({
       draggableCursor: this.get('isDrawing')
@@ -103,6 +104,7 @@ export default Component.extend({
         }
       );
     },
+    // Bypass default checkbox behavior and trigger action instead
     triggerMethod(func, event) {
       event.stopPropagation();
       this[func]();
