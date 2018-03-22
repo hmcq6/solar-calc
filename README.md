@@ -7,7 +7,7 @@ This README outlines the details of how to set up the Solar Calc(ulator) project
 
 The potential nominal solar power of a given area is calculated by multiplying the area in meters by the Solar Constant. The Solar Constant is the average solar radiation fluctuation through a circular projection of the earth. This provides a solid prediction of the total solar power for a given area.
 
-Next, estimation the estimation is refined by calculating what percentage of the light hits the drawn solar panel directly. Using the information given by https://www.grc.nasa.gov/www/k-12/Numbers/Math/Mathematical_Thinking/sun12.htm , Solar Calc calculates the potential minimum and maximum angles between a given latitude on earth and the sun. Using these equations Solar Calc will return an estimate of 1300W/m^2, pretty close to the accepted solar potential per square meter.
+Next, the estimation is refined by calculating what percentage of the light hits the drawn solar panel directly. Using the information given by https://www.grc.nasa.gov/www/k-12/Numbers/Math/Mathematical_Thinking/sun12.htm , Solar Calc calculates the potential minimum and maximum angles between a given latitude on earth and the sun. Using these equations Solar Calc will return an estimate of 1300W/m^2 (for Boston), pretty close to the accepted solar potential per square meter.
 
 Finally, to calculate the consumers expected nominal power, multiply the solar potential by the expected solar panel efficiency (inputted manually by user).
 
