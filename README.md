@@ -54,14 +54,15 @@ Tested working on
  - Chrome 65
  - Safari 11
  - MS Edge
-
-Not working
  - Firefox
 
 ## Bugs
 
- - Firefox click event not defined
  - Can not click through polygon, todo - implement click handler (example https://developers.google.com/maps/documentation/javascript/examples/polygon-arrays)
+
+Solved
+ - Firefox click event not defined
+Fixed with an [update to ember-google-maps](https://github.com/sandydoo/ember-google-maps/commit/6f47dff6fd81556bbd1cc902a45206c21a13ca00). `event` was not defined in the scope of the click event handler.
 
  ## Features I would like to implement
 
