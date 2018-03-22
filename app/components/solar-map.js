@@ -81,8 +81,12 @@ export default Component.extend({
   },
 
   _toggleBoundingBox() {
-    const polygon = this.get('_polygon');
     this.toggleProperty('isBoundingBoxShown');
+    this._drawBoundingBox();
+  },
+
+  _drawBoundingBox() {
+    const polygon = this.get('_polygon');
     if (polygon !== null) {
       polygon.setMap(
         this.get('isBoundingBoxShown')
@@ -127,9 +131,7 @@ export default Component.extend({
       this.get('_polygon').setMap(null);
     }
     this.set('_polygon', polygon);
-    if (this.get('isBoundingBoxShown')) {
-      polygon.setMap(this.get('map'));
-    }
+    this._drawBoundingBox();
   },
 
   actions: {
