@@ -95,9 +95,12 @@ export default Component.extend({
       );
 
       if (this.get('isBoundingBoxShown')) {
-        polygon.addListener('click', (googleEvent) => {
-          this._onClick({ googleEvent });
-        });
+        google.maps.event.removeListener(this.get('_polygonListener'));
+        this.set('_polygonListener',
+          polygon.addListener('click', (googleEvent) => {
+            this._onClick({ googleEvent });
+          })
+        );
       }
     }
   },
