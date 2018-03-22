@@ -81,13 +81,54 @@ export default Component.extend({
   },
 
   _toggleBoundingBox() {
+    const polygon = this.get('_polygon');
     this.toggleProperty('isBoundingBoxShown');
-    if (this.get('_polygon') !== null) {
-      this.get('_polygon').setMap(
+    if (polygon !== null) {
+      polygon.setMap(
         this.get('isBoundingBoxShown')
           ? this.get('map')
           : null
       );
+
+      if (this.get('isBoundingBoxShown')) {
+        polygon.addListener('click', (googleEvent) => {
+          this._onClick({ googleEvent });
+        });
+      }
+    }
+  },
+
+  _onClick({ googleEvent }) {
+    const { latLng } = googleEvent,
+          mapDefaults = {
+            geodesic: true,
+            strokeColor: 'orange',
+            strokeOpacity: 1.0,
+            strokeWeight: 3,
+            fillColor: 'black',
+            fillOpacity: 0.35
+          };
+    this.get('points').addObject({
+      lat: latLng.lat(),
+      lng: latLng.lng()
+    })
+    const lines = new google.maps.Polyline(
+      Object.assign({ path: this.get('points') }, mapDefaults)
+    );
+    if (this.get('_polylines') !== null) {
+      this.get('_polylines').setMap(null);
+    }
+    this.set('_polylines', lines);
+    lines.setMap(this.get('map'));
+    const polygon = new google.maps.Polygon(
+      Object.assign({ paths: this.get('points') }, mapDefaults)
+    );
+    if (this.get('_polygon') !== null) {
+      this.get('_polygon').setMap(null);
+    }
+    this.set('_polygon', polygon);
+    if (this.get('isBoundingBoxShown')) {
+      polygon.setMap(this.get('map'));
     }
   },
 
@@ -133,37 +174,7 @@ export default Component.extend({
     },
     onClick({ googleEvent }) {
       if (!this.get('isDrawing')) { return; }
-      const { latLng } = googleEvent,
-            mapDefaults = {
-              geodesic: true,
-              strokeColor: 'orange',
-              strokeOpacity: 1.0,
-              strokeWeight: 3,
-              fillColor: 'black',
-              fillOpacity: 0.35
-            };
-      this.get('points').addObject({
-        lat: latLng.lat(),
-        lng: latLng.lng()
-      })
-      const lines = new google.maps.Polyline(
-        Object.assign({ path: this.get('points') }, mapDefaults)
-      );
-      if (this.get('_polylines') !== null) {
-        this.get('_polylines').setMap(null);
-      }
-      this.set('_polylines', lines);
-      lines.setMap(this.get('map'));
-      const polygon = new google.maps.Polygon(
-        Object.assign({ paths: this.get('points') }, mapDefaults)
-      );
-      if (this.get('_polygon') !== null) {
-        this.get('_polygon').setMap(null);
-      }
-      this.set('_polygon', polygon);
-      if (this.get('isBoundingBoxShown')) {
-        polygon.setMap(this.get('map'));
-      }
+      this._onClick({ googleEvent });
     }
   }
 });
