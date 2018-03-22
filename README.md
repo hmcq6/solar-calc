@@ -15,8 +15,9 @@ Under the best conditions the calculator estimates roughly 250W/m^2.
 
 ### Assumptions
 
-Solar Constant - 1,365 W/m^2 (https://mynasadata.larc.nasa.gov/glossary/solar-constant-2/)
-Consumer Solar Panel Efficacy range - 15-22% (For this I reasearched the "best solar panels for 2018" and used their values)
+* Solar Constant - 1,365 W/m^2 (https://mynasadata.larc.nasa.gov/glossary/solar-constant-2/)
+
+* Consumer Solar Panel Efficacy range - 15-22% (For this I reasearched the "best solar panels for 2018" and used their values)
 
 ## Prerequisites
 
