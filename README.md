@@ -12,7 +12,7 @@ You will need the following things properly installed on your computer.
 
 ## Installation
 
-* `git clone <repository-url>` this repository
+* `git clone git@github.com:hmcq6/solar-calc.git` this repository
 * `cd solar-calc`
 * `npm install`
 * Add your google maps key to `config/environments.js`
@@ -28,18 +28,13 @@ You will need the following things properly installed on your computer.
 * `ember test`
 * `ember test --server`
 
-### Building
-
-* `ember build` (development)
-* `ember build --environment production` (production)
-
 ### 3rd Party Libraries
 
-* `ember-bootstrap`
-* `ember-cli-numeral`
-* `ember-font-awesome`
-* `ember-google-maps`
-* `ember-truth-helpers`
+* [`ember-bootstrap`](http://www.ember-bootstrap.com/)
+* [`ember-cli-numeral`](https://github.com/josemarluedke/ember-cli-numeral)
+* [`ember-font-awesome`](https://github.com/martndemus/ember-font-awesome)
+* [`ember-google-maps`](https://github.com/sandydoo/ember-google-maps)
+* [`ember-truth-helpers`](https://github.com/jmurphyau/ember-truth-helpers)
 
 ## Features/Requirements
 
@@ -47,6 +42,10 @@ You will need the following things properly installed on your computer.
  - Search for address and jump to location
  - Draw polygon on map
  - Display estimated solar power at location
+
+Bonus
+
+ - Minimal testing
 
  #### Supports major browsers
 
