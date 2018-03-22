@@ -3,7 +3,7 @@
 This README outlines the details of how to set up the Solar Calc(ulator) project. Solar Calc is a simple tool to estimate the excpected nominal solar power of a given area.
 
 
-### Assumptions
+### How solar power is calculated
 
 The potential nominal solar power of a given area is calculated by multiplying the area in meters by the Solar Constant. The Solar Constant is the average solar radiation fluctuation through a circular projection of the earth. This provides a solid prediction of the total solar power for a given area.
 
@@ -12,6 +12,11 @@ Next, estimation the estimation is refined by calculating what percentage of the
 Finally, to calculate the consumers expected nominal power, multiply the solar potential by the expected solar panel efficiency (inputted manually by user).
 
 Under the best conditions the calculator estimates roughly 250W/m^2.
+
+### Assumptions
+
+Solar Constant - 1,365 W/m^2 (https://mynasadata.larc.nasa.gov/glossary/solar-constant-2/)
+Consumer Solar Panel Efficacy range - 15-22% (For this I reasearched the "best solar panels for 2018" and used their values)
 
 ## Prerequisites
 
