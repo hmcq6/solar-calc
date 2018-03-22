@@ -9,7 +9,12 @@
   {{#g.control position="TOP_CENTER"}}
     <div class="map-control top-panel">
       <div class="input-group">
-        {{input type="text" value=address class="form-control" placeholder="Search for Location"}}
+        {{input
+          type="text"
+          value=address
+          action="search"
+          class="form-control"
+          placeholder="Search for Location"}}
         <div class="input-group-append">
           {{#bs-button
             type="primary"

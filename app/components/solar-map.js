@@ -138,12 +138,12 @@ export default Component.extend({
   },
 
   actions: {
-    search(map) {
+    search() {
       (new google.maps.Geocoder()).geocode(
         this.getProperties('address'),
         ([res], _status) => {
           const { location } = res.geometry;
-          map.panTo({
+          this.get('map').panTo({
             lat: location.lat(),
             lng: location.lng()
           });
