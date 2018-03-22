@@ -1,15 +1,10 @@
 import Component from '@ember/component';
-import { inject } from '@ember/service';
-import { reads } from '@ember/object/computed';
 import { computed } from '@ember/object';
 import numeral from 'numeral';
 
 const solarConstant = 1365; // W/m^2
 
 export default Component.extend({
-  googleMapsApi: inject(),
-  google: reads('googleMapsApi.google'),
-
   classNames: ['col', 'solar-map'],
 
   address: '',
@@ -99,7 +94,7 @@ export default Component.extend({
     search(map) {
       (new google.maps.Geocoder()).geocode(
         this.getProperties('address'),
-        ([res], status) => {
+        ([res], _status) => {
           const { location } = res.geometry;
           map.panTo({
             lat: location.lat(),
