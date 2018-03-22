@@ -39,4 +39,31 @@ You will need the following things properly installed on your computer.
 * `ember-cli-numeral`
 * `ember-font-awesome`
 * `ember-google-maps`
-* `ember-truth-helpers` 
+* `ember-truth-helpers`
+
+## Features/Requirements
+
+ - Display a map
+ - Search for address and jump to location
+ - Draw polygon on map
+ - Display estimated solar power at location
+
+ #### Supports major browsers
+
+Tested working on
+ - Chrome 65
+ - Safari 11
+ - MS Edge
+
+Not working
+ - Firefox
+
+## Bugs
+
+ - Firefox click event not defined
+ - Can not click through polygon, todo - implement click handler (example https://developers.google.com/maps/documentation/javascript/examples/polygon-arrays)
+
+ ## Features I would like to implement
+
+  - Point marker with "x" icon
+  - Click to remove point
