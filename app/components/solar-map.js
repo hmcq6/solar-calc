@@ -13,7 +13,7 @@ export default Component.extend({
   classNames: ['col', 'solar-map'],
 
   address: '',
-  draw: false,
+  isDrawing: true,
   isBoundingBoxShown: false,
   isClearDisabled: computed.equal('_polylines', null),
   points: [],
@@ -71,13 +71,17 @@ export default Component.extend({
     return solarConstant * minPercentage * this.get('area') * efficiency;
   }),
 
-  _toggleDraw() {
-    this.toggleProperty('draw');
+  _updateCursor() {
     this.get('map').setOptions({
-      draggableCursor: this.get('draw')
+      draggableCursor: this.get('isDrawing')
         ? 'crosshair'
         : 'grab'
     });
+  },
+
+  _toggleDraw() {
+    this.toggleProperty('isDrawing');
+    this._updateCursor();
   },
 
   _toggleBoundingBox() {
@@ -128,9 +132,10 @@ export default Component.extend({
     },
     onLoad({ map, _publicAPI}) {
       this.set('map', map);
+      this._updateCursor();
     },
     onClick({ googleEvent }) {
-      if (!this.get('draw')) { return; }
+      if (!this.get('isDrawing')) { return; }
       const { latLng } = googleEvent,
             mapDefaults = {
               geodesic: true,
