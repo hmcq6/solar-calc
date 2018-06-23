@@ -1,0 +1,11 @@
+.ember-google-map {
+  .top-panel {
+    margin-top: 50px;
+    filter: drop-shadow(0 5mm 3mm #111);
+
+    & input[type="text"] {
+      width: 30em;
+      display: inline-block;
+    }
+  }
+}

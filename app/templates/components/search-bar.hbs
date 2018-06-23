@@ -1,0 +1,20 @@
+{{#g.control position="TOP_CENTER"}}
+  <div class="map-control top-panel">
+    <div class="input-group">
+      {{input
+        type="text"
+        value=address
+        enter="search"
+        class="form-control"
+        placeholder="Search for Location"}}
+      <div class="input-group-append">
+        {{#bs-button
+          type="primary"
+          onClick=(action "search" g.map)}}
+          Search
+          {{fa-icon "search"}}
+        {{/bs-button}}
+      </div>
+    </div>
+  </div>
+{{/g.control}}
