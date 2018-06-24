@@ -6,89 +6,16 @@
   onClick=(action "onClick")
   as |g|
 }}
-  {{#g.control position="TOP_CENTER"}}
-    <div class="map-control top-panel">
-      <div class="input-group">
-        {{input
-          type="text"
-          value=address
-          enter="search"
-          class="form-control"
-          placeholder="Search for Location"}}
-        <div class="input-group-append">
-          {{#bs-button
-            type="primary"
-            onClick=(action "search" g.map)}}
-            Search
-            {{fa-icon "search"}}
-          {{/bs-button}}
-        </div>
-      </div>
-    </div>
-  {{/g.control}}
-  {{#g.control position="TOP_RIGHT"}}
-    <form class="map-control right-panel text-right">
-      <div class="form-group">
-        {{#bs-button
-          type="dark"
-          onClick=(action "toggleDraw" g.map)}}
-          <input type="checkbox"
-            checked={{isDrawing}}
-            onClick={{action "triggerMethod" "_toggleDraw"}} />
-          Draw Plot
-          {{fa-icon "edit"}}
-        {{/bs-button}}
-      </div>
-      <div class="form-group">
-        {{#bs-button
-          type="dark"
-          onClick=(action "toggleBoundingBox")}}
-          <input type="checkbox" 
-            checked={{isBoundingBoxShown}}
-            onClick={{action "triggerMethod" "_toggleBoundingBox"}} />
-          Draw Bounding Box
-          {{fa-icon "area-chart"}}
-        {{/bs-button}}
-      </div>
-      <div class="form-group">
-        {{#bs-button
-          type="dark"
-          disabled=isClearDisabled
-          onClick=(action "clearPoints")}}
-          Clear
-          {{fa-icon "trash"}}
-        {{/bs-button}}
-      </div>
-      <div class="form-group">
-        <label>Expected Solar Efficiency: </label>
-        {{#bs-dropdown as |dd|}}
-          {{#dd.button type="dark"}}{{selectedEfficiency}}<span class="caret"></span>{{/dd.button}}
-          {{#dd.menu tagName="div" class="list-group list-group-flush" as |menu|}}
-            {{#each solarEfficiencyRanges as |range|}}
-              {{#menu.item}}
-                <li class="list-group-item {{if (eq selectedEfficiency range) 'active'}}" {{action "selectRange" range}}>{{range}}</li>
-              {{/menu.item}}
-            {{/each}}
-          {{/dd.menu}}
-        {{/bs-dropdown}}
-      </div>
-      <div class="form-group">
-        <label>Area: </label>
-        {{format-value area '0,0.00'}} M²
-      </div>
-      <h3 class="form-group">
-        <span class="badge badge-success">
-          <label>Peak Season Power: </label>
-          {{format-value seasonalPeakPower '0,0'}} W
-        </span>
-      </h3>
-      <h3 class="form-group">
-        <span class="badge badge-warning">
-          <label>Off Season Power: </label>
-          {{format-value seasonalMinPower '0,0'}} W
-        </span>
-      </h3>
-    </form>
-  {{/g.control}}
+  {{yield}}
+  {{search-bar g=g map=map}}
+  {{control-panel
+    g=g
+    map=map
+    isDrawing=isDrawing
+    points=points
+    _polylines=_polylines
+    _polygon=_polygon
+    clearPoints="clearPoints"
+    _updateCursor="_updateCursor"
+    toggleIsDrawing="toggleIsDrawing"}}
 {{/g-map}}
-{{yield}}
